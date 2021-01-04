@@ -33,7 +33,7 @@ namespace StackUnderflow.API.AspNetCore.Controllers
         {
             //load from db
             var questionWriteContext = 
-                new QuestionWriteContext(new EFList<Post>(_dbContext.Post));
+                new CreateQuestionWriteContext(new EFList<Post>(_dbContext.Post));
 
             var expr = from replyResult in QuestionsDomain.CreateReply(questionId, "123")
                        select replyResult;

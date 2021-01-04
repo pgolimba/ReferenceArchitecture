@@ -33,24 +33,24 @@ namespace StackUnderflow.API.Rest.Controllers
             _dbContext = dbContext;
             _client = client;
         }
-        [HttpGet("getTenants")]
+       [HttpGet("getTenants")]
         public async Task<IActionResult> GetTenants()
         {
 
-            /* var tenant = new Tenant()
+             /*var tenant = new Tenant()
              {
-                 Name = "testPetrisoara",
-                 Description = "bla bla",
+                 Name = "test3",
+                 Description = "bla bla3",
                  OrganisationId = Guid.NewGuid()
          };
 
              _dbContext.Tenant.Add(tenant);
              _dbContext.SaveChanges(); */
 
-            var tenants = _dbContext
+           var tenants = _dbContext
                 .Tenant
                 .Where(p => p.Name.Equals("testPetrisoara")).ToList();
-            _dbContext.RemoveRange(tenants);
+           // _dbContext.RemoveRange(tenants);
             _dbContext.SaveChanges();
 
             return Ok(tenants);
@@ -67,6 +67,7 @@ namespace StackUnderflow.API.Rest.Controllers
             dependencies.GenerateInvitationToken = () => Guid.NewGuid().ToString();
             dependencies.SendInvitationEmail = SendEmail;
 
+
             var expr = from createTenantResult in BackofficeDomain.CreateTenant(createTenantCmd)
                        let adminUser = createTenantResult.SafeCast<CreateTenantResult.TenantCreated>().Select(p => p.AdminUser)
                        let inviteAdminCmd = new InviteTenantAdminCmd(adminUser)
@@ -74,6 +75,7 @@ namespace StackUnderflow.API.Rest.Controllers
                        select new { createTenantResult, inviteAdminResult };
 
             var r = await _interpreter.Interpret(expr, ctx, dependencies);
+
             _dbContext.SaveChanges();
             return r.createTenantResult.Match(
                 created => (IActionResult)Ok(created.Tenant.TenantId),
