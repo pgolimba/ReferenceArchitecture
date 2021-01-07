@@ -9,7 +9,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftExtensions)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftExtensions)" />
-    <PackageReference Include="Dapper" Version="2.0.35" />
   </ItemGroup>
 
   <ItemGroup>

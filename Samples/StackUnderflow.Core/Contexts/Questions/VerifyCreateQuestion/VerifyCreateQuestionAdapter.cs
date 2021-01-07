@@ -10,11 +10,11 @@ using static StackUnderflow.Domain.Core.Contexts.Questions.VerifyCreateQuestion.
 
 namespace StackUnderflow.Domain.Core.Contexts.Questions.VerifyCreateQuestion
 {
-    public partial class VerifyCreateQuestionAdapter : Adapter<VerifyCreateQuestionCmd, IVerifyCreateQuestionResult, CreateQuestionWriteContext, QuestionDependencies>
+    public partial class VerifyCreateQuestionAdapter : Adapter<VerifyCreateQuestionCmd, IVerifyCreateQuestionResult, QuestionWriteContext, QuestionDependencies>
     {
         public VerifyCreateQuestionAdapter() { }
 
-        public override async Task<IVerifyCreateQuestionResult> Work(VerifyCreateQuestionCmd command, CreateQuestionWriteContext state, QuestionDependencies dependencies)
+        public override async Task<IVerifyCreateQuestionResult> Work(VerifyCreateQuestionCmd command, QuestionWriteContext state, QuestionDependencies dependencies)
         {
             var wf = from isValid in command.TryValidate()
                      from user in command.AdminUser.ToTryAsync()
@@ -35,7 +35,7 @@ namespace StackUnderflow.Domain.Core.Contexts.Questions.VerifyCreateQuestion
             return new VerifyLetter(user.Email, letter, new Uri(link));
         }
 
-        public override Task PostConditions(VerifyCreateQuestionCmd cmd, IVerifyCreateQuestionResult result, CreateQuestionWriteContext state)
+        public override Task PostConditions(VerifyCreateQuestionCmd cmd, IVerifyCreateQuestionResult result, QuestionWriteContext state)
         {
             return Task.CompletedTask;
         }

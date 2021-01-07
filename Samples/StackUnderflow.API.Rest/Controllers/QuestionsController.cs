@@ -32,8 +32,13 @@ namespace StackUnderflow.API.AspNetCore.Controllers
         public async Task<IActionResult> CreateReply(int questionId)
         {
             //load from db
-            var questionWriteContext = 
-                new CreateQuestionWriteContext(new EFList<Post>(_dbContext.Post));
+           var questionWriteContext = 
+                new QuestionWriteContext(
+                    new EFList<Tenant>(_dbContext.Tenant),
+                    new EFList<TenantUser>(_dbContext.TenantUser),
+                    new EFList<User>(_dbContext.User),
+                    new EFList<Post>(_dbContext.Post)
+                   );
 
             var expr = from replyResult in QuestionsDomain.CreateReply(questionId, "123")
                        select replyResult;

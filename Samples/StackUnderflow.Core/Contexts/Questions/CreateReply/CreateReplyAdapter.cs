@@ -18,7 +18,7 @@ namespace StackUnderflow.Domain.Core.Contexts.Questions.CreateReply
 
         public override async Task<CreateReplyResult.ICreateReplyResult> Work(CreateReplyCmd cmd, object state, object dependencies)
         {
-            var questionWriteContext = (CreateQuestionWriteContext)state;
+            var questionWriteContext = (QuestionWriteContext)state;
             if (!questionWriteContext.Posts.Any(p => p.PostId == cmd.QuestionId))
                 return new CreateReplyResult.ReplyNotCreated($"Cannot find a question with id {cmd.QuestionId}");
 

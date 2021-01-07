@@ -16,20 +16,34 @@ using System.Threading.Tasks;
 
 namespace StackUnderflow.API.AspNetCore.Controllers
 {
-   [ApiController]
-   [Route("questions")]
+    [ApiController]
+    [Route("questions")]
     public class CreateQuestionController : ControllerBase
     {
         private readonly IInterpreterAsync _interpreter;
         private readonly StackUnderflowContext _dbContext;
         private readonly IClusterClient _client;
 
-        public CreateQuestionController(IInterpreterAsync interpreter, StackUnderflowContext dbContext)
+        public CreateQuestionController(IInterpreterAsync interpreter, StackUnderflowContext dbContext, IClusterClient client)
         {
             _interpreter = interpreter;
             _dbContext = dbContext;
+            _client=client;
         }
 
+        [HttpPost("CreateQuestion")]
+        public async Task<IActionResult> CreateQuestion()
+        {
+            var stream = _client.GetStreamProvider("SMSProvider").GetStream<Post>(Guid.Empty, "questions");
+            var post = new Post
+            {
+                PostId = 2,
+                PostText = "My question2"
+            };
+
+            await stream.OnNextAsync(post);
+            return Ok();
+        }
 
 
         [HttpPost("create")]
@@ -51,13 +65,13 @@ namespace StackUnderflow.API.AspNetCore.Controllers
             dependencies.SendVerifyEmail = SendEmail;
 
             var expr = from createQuestionResult in CreateQuestionDomain.CreateQuestion(createQuestionCmd)
-                       let user = createQuestionResult.SafeCast<CreateQuestionResult.QuestionCreated>().Select(p => p.Author)
-                       let confirmationQuestionCmd = new ConfirmationQuestionCmd(user)
-                       from ConfirmationQuestionResult in CreateQuestionDomain.ConfirmQuestion(confirmationQuestionCmd)
-                       select new { createQuestionResult, ConfirmationQuestionResult };
+                      // let user = createQuestionResult.SafeCast<CreateQuestionResult.QuestionCreated>().Select(p => p.Author)
+                       let verifyCreateQuestionCmd = new VerifyCreateQuestionCmd()
+                       from questionCreateVerified in QuestionCreateVerified(createQuestionCmd)
+                       select new { createQuestionResult, VerifyCreateQuestionResult };
 
-            //var expr1 = from questionResult in CreateQuestionDomain.CreateQuestion(questionId,"title of first question", "body of first question", "C# category")
-                       //select questionResult;
+            //var expr1 = from questionResult in CreateQuestionDomain.VerifyCreateQuestion(VerifyCreateQuestionCmd)
+                     /// select questionResult;
 
             CreateQuestionResult.ICreateQuestionResult result = await _interpreter.Interpret(expr, Unit.Default, new object());
 

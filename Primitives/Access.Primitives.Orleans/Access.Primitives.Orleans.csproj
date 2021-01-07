@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.Orleans.Core.Abstractions" Version="$(MicrosoftOrleans)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensions)" />
     <PackageReference Include="Microsoft.Orleans.Core" Version="$(MicrosoftOrleans)" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="3.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Remote.Linq" Version="$(RemoteLinq)" />
     <PackageReference Include="Remote.Linq.Newtonsoft.Json" Version="$(RemoteLinq)" />
